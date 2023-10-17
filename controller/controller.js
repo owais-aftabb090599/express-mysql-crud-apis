@@ -218,6 +218,31 @@ export const allUsersApi = (req, res) => {
     }
 }
 
+export const searchUsers = (req, res) => {
+    try {
+        const { searchTerm } = req.query;
+        const qry = `SELECT * FROM crudapp WHERE name REGEXP ? LIMIT 10`;
+        db.query(qry, [searchTerm], (err, results) => {
+            if (err) {
+                return res.json({
+                    status: 'error',
+                    message: err.message || 'Internal Server Error'
+                });
+            }
+
+            return res.json({
+                status: "success",
+                users: results
+            });
+        });
+    } catch (error) {
+        return res.json({
+            status: 'error',
+            message: error.message || 'Internal Server Error'
+        });
+    }
+}
+
 export const deleteAllUsers = (req, res) => {
     try {
         db.query(`DELETE FROM crudapp`, (err, result) => {
